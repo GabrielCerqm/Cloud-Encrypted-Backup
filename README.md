@@ -19,19 +19,29 @@ utilizando armazenamento em nuvem.
 - Microsoft OneDrive
 - Agendador de Tarefas do Windows
 
-## Arquitetura
+## Arquitetura da Solução
 
-Unidade de Rede
-    |
-    v
-Restic
-    |
-    | Criptografia e deduplicação
-    v
-Rclone
-    |
-    v
-Microsoft OneDrive
+```mermaid
+flowchart LR
+    A["Unidade de Rede<br/>Arquivos Corporativos"]
+
+    subgraph Windows["Ambiente Windows"]
+        B["Restic"]
+        C["Criptografia AES-256<br/>Deduplicação<br/>Snapshots"]
+    end
+
+    subgraph Cloud["Armazenamento em Nuvem"]
+        D["Rclone"]
+        E["Microsoft OneDrive"]
+        F["Repositório<br/>BKP_Repositório"]
+    end
+
+    A --> B
+    B --> C
+    C --> D
+    D --> E
+    E --> F
+```
 
 ## Funcionalidades
 
