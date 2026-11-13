@@ -1,0 +1,34 @@
+# Credenciais e variáveis de ambiente
+.env
+.env.*
+!.env.example
+*.key
+*.pem
+*.secret
+secrets/
+credentials/
+
+# Configuração real do Rclone
+rclone.conf
+
+# Senhas e arquivos sensíveis do Restic
+restic-password*
+password.txt
+
+# Logs
+*.log
+logs/
+
+# Backups e dados reais
+backups/
+dados/
+*.bak
+*.zip
+*.7z
+
+# Arquivos temporários
+*.tmp
+*.temp
+
+# Configurações locais
+.vscode/
