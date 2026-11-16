@@ -9,12 +9,36 @@ O ambiente real utiliza automação de backup. Esta página registra a análise 
 | Captura | Resultado observado | Limitação |
 | --- | --- | --- |
 | Agendador de Tarefas | Tarefa Backup Diário - Restic; disparador diário às 19:50; última execução em 16/11/2026 às 19:50; resultado 0x0 | A tarefa aparece como **Desabilitado** e o histórico está desabilitado. Não comprova continuidade do agendamento nem, isoladamente, a origem automática do disparo. |
-| Ações da tarefa | Ação Iniciar um programa usando Windows PowerShell | Os argumentos estão cortados. É necessária a janela Editar Ação para mostrar os campos completos. |
+| Ações da tarefa | Ação Iniciar um programa usando Windows PowerShell | Os argumentos estão cortados na captura original; os valores completos foram posteriormente informados pelo responsável e estão documentados abaixo. |
 | Log PowerShell | Início às 19:50:02; snapshot ed71d352 salvo; código de saída 0; término da transcrição às 19:50:30 | Comprova o resultado desta execução de backup; não comprova restauração deste snapshot nem todas as condições de execução sem sessão aberta. |
 
 O log registra 8.065 arquivos, 742,395 MiB processados em 25 segundos, nenhum arquivo novo ou alterado e 8.065 arquivos inalterados. Foram adicionados 51,497 KiB ao repositório (10,714 KiB armazenados), com alterações em diretórios. A execução incremental pode gerar um novo snapshot mesmo sem alterações no conteúdo dos arquivos.
 
 Os horários do Agendador e da transcrição são compatíveis com a mesma execução. Os horários acima são reproduzidos conforme exibidos nas capturas; o fuso horário do computador não foi verificado.
+
+## Configuração da ação no Agendador de Tarefas
+
+Na tarefa **Backup Diário - Restic**, em **Ações → Editar**, utilizar a ação **Iniciar um programa** com os campos separados:
+
+**Programa/script** — valor completo informado pelo responsável:
+
+```text
+C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe
+```
+
+**Adicionar argumentos** — valor completo informado pelo responsável:
+
+```text
+-NoProfile -NonInteractive -ExecutionPolicy Bypass -File "C:\Scripts\Restic\Backup-Diario.ps1"
+```
+
+**Iniciar em** — diretório exibido na captura de Editar Ação:
+
+```text
+C:\Scripts\Restic
+```
+
+Os argumentos pertencem ao campo **Adicionar argumentos**, separados do caminho do executável. Esta transcrição registra os valores fornecidos; não representa um novo teste de execução.
 
 ## Comando registrado no log
 
@@ -31,7 +55,7 @@ O comando executa um script já existente na máquina. Sua presença no log não
 ## Capturas necessárias para completar a evidência
 
 1. **Tarefa habilitada e disparador ativo:** mostrar status Pronto, recorrência, próxima execução e a aba Disparadores com o disparador habilitado.
-2. **Editar Ação:** mostrar Programa/script, Adicionar argumentos e Iniciar em, sem truncamento. Se Iniciar em estiver vazio, preservar esse estado na captura.
+2. **Editar Ação:** os campos completos estão transcritos acima, com programa e argumentos confirmados pelo responsável e diretório de trabalho visível na captura. Uma captura sem truncamento pode complementar o registro.
 3. **Execução por horário:** habilitar o histórico e aguardar o próximo disparo; capturar os eventos que identifiquem início pelo agendamento e conclusão, juntamente com o log correspondente. Executar manualmente a tarefa não comprova o disparador por horário.
 4. **Restauração do snapshot gerado pela tarefa:** restaurar o snapshot identificado no log em uma pasta separada e comparar hashes SHA-256 de arquivos de teste. A documentação anterior de [restauração](restauracao.md) é complementar, mas não substitui a validação deste snapshot.
 
