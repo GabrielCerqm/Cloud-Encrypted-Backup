@@ -48,6 +48,10 @@ flowchart LR
 6. [Segurança e verificações de integridade](docs/seguraca.md)
 7. [Índice das 16 evidências](docs/evidencias.md)
 
+### Validação da automação
+
+Consulte a [análise da execução de 16/11/2026 e das evidências pendentes](docs/automacao.md). O log registra snapshot salvo e código de saída 0; a captura do Agendador mostra a tarefa desabilitada. A publicação dos PNGs anonimizados permanece pendente. Este registro complementa a v1.0, sem publicar ainda a implementação completa da automação.
+
 ### Comandos essenciais (reprodução em ambiente de teste)
 
 Após configurar o remoto do Rclone e a senha do repositório de forma segura:
