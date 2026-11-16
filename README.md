@@ -75,4 +75,14 @@ As evidências coletadas no ambiente de validação cobrem: identificação das 
 
 Este repositório **não** deve conter dados de clientes, arquivos originais de backup, tokens OAuth, `rclone.conf`, senhas, chaves ou identificadores sensíveis. As evidências utilizam um ambiente de validação com caminhos de exemplo; evite compartilhar capturas não revisadas.
 
-**Licença:** não definida neste momento.
+## Licença
+
+Este projeto é distribuído sob a **Licença MIT**. Consulte o arquivo [LICENSE](LICENSE) para conhecer os termos de uso, modificação e distribuição.
+
+Copyright (c) 2026 Gabriel Cerqueira.
+
+## Aviso de uso e segurança
+
+Os exemplos e scripts devem ser **adaptados e validados antes de qualquer utilização em produção**. Teste a restauração em ambiente isolado, revise permissões e exclusões e proteja as senhas do Restic e as credenciais do Rclone/OneDrive.
+
+Este projeto é disponibilizado **sem garantia**, conforme os termos da licença MIT. Não publique tokens, senhas, arquivos `rclone.conf` nem dados reais de clientes.
