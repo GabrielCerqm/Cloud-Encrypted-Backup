@@ -42,10 +42,11 @@ flowchart LR
 
 1. [Instalação e versões](docs/instalacao.md)
 2. [Configuração do Rclone com OneDrive — passo a passo](docs/rclone-onedrive.md)
-3. [Configuração do ambiente e backup](docs/configuracao.md)
-4. [Restauração e conferência](docs/restauracao.md)
-5. [Segurança e verificações de integridade](docs/seguraca.md)
-6. [Índice das 16 evidências](docs/evidencias.md)
+3. [Restic — configuração, snapshots e operação](docs/restic.md)
+4. [Configuração do ambiente e backup](docs/configuracao.md)
+5. [Restauração e conferência](docs/restauracao.md)
+6. [Segurança e verificações de integridade](docs/seguraca.md)
+7. [Índice das 16 evidências](docs/evidencias.md)
 
 ### Comandos essenciais (reprodução em ambiente de teste)
 
