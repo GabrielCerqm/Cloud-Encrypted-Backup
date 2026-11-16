@@ -1,13 +1,23 @@
-# Backup Criptografado Alpha
-# Exemplo inicial de script PowerShell
+# Cloud Encrypted Backup - exemplo didático v1.0
+# Execução MANUAL. Não implementa automação, agendamento nem retenção.
+# Antes de executar, configure o remoto onedrive-lab e uma senha segura do Restic.
+# O repositório deve ter sido inicializado previamente com "restic init".
+# Não inclua credenciais ou dados reais neste arquivo.
 
-Write-Host "Iniciando rotina de backup..."
+$ErrorActionPreference = 'Stop'
+$env:RESTIC_REPOSITORY = 'rclone:onedrive-lab:Backup-Lab-Restic'
+$origem = 'C:\Backup-Restic\Dados'
 
-# TODO:
-# 1. Validar o acesso à origem
-# 2. Validar o repositório
-# 3. Executar o Restic
-# 4. Registrar logs
-# 5. Validar o resultado
+if (-not (Test-Path -LiteralPath $origem -PathType Container)) {
+    throw "Diretorio de origem nao encontrado: $origem"
+}
 
-Write-Host "Estrutura inicial concluída."
+restic backup $origem
+if ($LASTEXITCODE -ne 0) {
+    throw "Falha no comando de backup do Restic (codigo $LASTEXITCODE)"
+}
+
+restic snapshots
+if ($LASTEXITCODE -ne 0) {
+    throw "Falha na consulta de snapshots (codigo $LASTEXITCODE)"
+}
