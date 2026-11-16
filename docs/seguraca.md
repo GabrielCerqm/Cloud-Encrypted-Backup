@@ -4,6 +4,10 @@
 
 O **Restic criptografa os dados antes do armazenamento remoto** e permite restaurá-los com a senha correta do repositório. A estrutura de pastas do repositório (`data/`, `index/`, `keys/`, `snapshots/`) não apresenta os documentos originais legíveis no OneDrive.
 
+![Estrutura do repositório criptografado](assets/seguraca/05-estrutura-criptografada.png)
+
+![Subpastas dos packs criptografados em data](assets/seguraca/06-pasta-data.png)
+
 A criptografia dos arquivos não elimina a necessidade de proteger o acesso à conta de nuvem nem a máquina utilizada para backups.
 
 ## Credenciais e senhas
@@ -15,14 +19,17 @@ A criptografia dos arquivos não elimina a necessidade de proteger o acesso à c
 - Proteja a conta Microsoft com MFA e controle de acesso compatível com o ambiente.
 - Preserve uma cópia segura da senha e documente um procedimento de recuperação, sem incluí-la no GitHub.
 
-## Validações realizadas em laboratório
+## Verificações de integridade
 
-1. Inspeção do repositório no OneDrive e de seus objetos criptografados (evidências 04–06).
-2. Verificação da estrutura e metadados com `restic check` (13).
-3. Verificação de dados com `restic check --read-data` (14).
-4. Comparação de SHA-256 entre arquivos originais e restaurados selecionados (15–16).
+O `restic check` verifica a estrutura e os metadados do repositório.
 
-Esses testes sustentam a integridade observada no laboratório, mas não substituem testes periódicos de recuperação, políticas de acesso nem análise de riscos em produção.
+![Verificação com restic check](assets/seguraca/13-restic-check.png)
+
+O `restic check --read-data` também lê e verifica os dados dos packs.
+
+![Verificação com restic check --read-data](assets/seguraca/14-restic-check-read-data.png)
+
+A [conferência SHA-256 dos arquivos restaurados](restauracao.md#3-conferir-os-arquivos) está documentada junto à restauração.
 
 ## Atenção ao publicar capturas
 

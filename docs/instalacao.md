@@ -21,3 +21,5 @@ winget install --id Rclone.Rclone -e
 restic version
 rclone version
 ```
+
+![Ferramentas e versões](assets/instalacao/01-ferramentas-e-versoes.png)
