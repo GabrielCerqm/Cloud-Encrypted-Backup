@@ -16,7 +16,7 @@ rclone listremotes
 rclone lsf "onedrive-lab:"
 ```
 
-Crie um remoto OneDrive pela interface interativa do Rclone. **Não publique** tokens, dados da conta nem o arquivo `rclone.conf`. Verifique em seguida a criação/visibilidade do diretório de destino.
+Siga o [guia passo a passo de configuração do Rclone com OneDrive](rclone-onedrive.md) para criar o remote, autenticar a conta via OAuth, selecionar a unidade e validar o acesso. **Não publique** tokens, dados da conta nem o arquivo `rclone.conf`. Verifique em seguida a criação/visibilidade do diretório de destino.
 
 ![Conexão do Rclone ao OneDrive](assets/configuracao/03-rclone-onedrive.png)
 
