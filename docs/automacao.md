@@ -1,104 +1,126 @@
-# Automação — validação da execução
+# Automação do backup no Windows 11 — v1.1
 
-O ambiente real utiliza automação de backup. Esta página registra a análise das três capturas fornecidas em 16/11/2026, obtidas no ambiente de validação. O script completo ainda não integra a documentação pública da v1.0.
+Rotina PowerShell com Restic, Rclone e Agendador de Tarefas. Os caminhos abaixo pertencem ao ambiente de validação, utilizado para documentar a solução em produção sem divulgar dados reais.
 
-> **Atualização:** as capturas anonimizadas das abas Geral e Configurações estão publicadas abaixo. Os PNGs anteriores de Disparadores, Ações e Log ainda aguardam publicação. As imagens desta página foram editadas por IA para ocultar identificadores; os estados descritos foram conferidos nas capturas originais.
+## Scripts publicados
 
-## Resultados observados
+- [Backup-Diario.ps1](../scripts/Backup-Diario.ps1): valida a origem e os arquivos necessários, inicia transcrição, executa o Restic e devolve seu código de saída.
+- [Executar-Backup.ps1](../scripts/Executar-Backup.ps1): executor opcional de diagnóstico, com captura adicional da saída do processo.
+- [backup.ps1](../scripts/backup.ps1): exemplo manual da v1.0, preservado para referência.
 
-| Captura | Resultado observado | Limitação |
-| --- | --- | --- |
-| Agendador de Tarefas | Tarefa Backup Diário - Restic; disparador diário às 19:50; última execução em 16/11/2026 às 19:50; resultado 0x0 | A captura anterior mostrava a tarefa desabilitada. Nas novas capturas das abas Geral e Configurações, o status é **Pronto**. O histórico do disparo por horário ainda não foi apresentado. |
-| Ações da tarefa | Ação Iniciar um programa usando Windows PowerShell | Os argumentos estão cortados na captura original; os valores completos foram posteriormente informados pelo responsável e estão documentados abaixo. |
-| Log PowerShell | Início às 19:50:02; snapshot ed71d352 salvo; código de saída 0; término da transcrição às 19:50:30 | Comprova o resultado desta execução de backup; não comprova restauração deste snapshot nem todas as condições de execução sem sessão aberta. |
+Os dois primeiros scripts foram fornecidos pelo responsável e revisados estaticamente. Não contêm senhas ou tokens. Foram adicionados comentários explicativos; o executor opcional passou a usar o prefixo de log `execucao_`, diferenciando-o da transcrição `backup_`. Não houve nova execução dos scripts publicados neste ambiente.
 
-O log registra 8.065 arquivos, 742,395 MiB processados em 25 segundos, nenhum arquivo novo ou alterado e 8.065 arquivos inalterados. Foram adicionados 51,497 KiB ao repositório (10,714 KiB armazenados), com alterações em diretórios. A execução incremental pode gerar um novo snapshot mesmo sem alterações no conteúdo dos arquivos.
+## 1. Preparar a máquina e a conta da tarefa
 
-Os horários do Agendador e da transcrição são compatíveis com a mesma execução. Os horários acima são reproduzidos conforme exibidos nas capturas; o fuso horário do computador não foi verificado.
+1. Concluir [instalação](instalacao.md), [configuração do Rclone](rclone-onedrive.md) e inicialização do repositório conforme [Restic](restic.md).
+2. Copiar os dois scripts para `C:\Scripts\Restic`.
+3. Revisar no início de `Backup-Diario.ps1`:
+   - Origem: `C:\Backup-Restic\Dados`.
+   - Repositório: `rclone:onedrive-lab:Backup-Lab-Restic`.
+   - Executável: `C:\Tools\Restic\restic.exe`.
+   - Senha: `Config\restic-password.txt`, relativo à pasta do script.
+   - Configuração Rclone: `%APPDATA%\rclone\rclone.conf` da conta que executa a tarefa.
+4. Criar o arquivo de senha local com a senha do repositório existente, fora da cópia do Git. Restringir suas permissões à conta da rotina e aos administradores autorizados. Não publicar seu conteúdo.
+5. Confirmar que essa conta tem acesso à origem, à senha, ao Rclone e permissão de escrita na pasta de logs. `rclone.exe` precisa ser localizado pelo PATH da conta.
+6. Não executar `restic init` novamente para um repositório existente.
 
-## Configuração da ação no Agendador de Tarefas
+O script verifica a existência dos arquivos, mas não verifica suas permissões de segurança. Consulte [Segurança](seguraca.md).
 
-Na tarefa **Backup Diário - Restic**, em **Ações → Editar**, utilizar a ação **Iniciar um programa** com os campos separados:
+## 2. Agendamento e ação
 
-**Programa/script** — valor completo informado pelo responsável:
+Disparador diário às **19:50**, habilitado:
+
+![Disparador diário](assets/automacao/01-disparadores.png)
+
+Na ação **Iniciar um programa**, preencher os campos separadamente.
+
+**Programa/script:**
 
 ```text
 C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe
 ```
 
-**Adicionar argumentos** — valor completo informado pelo responsável:
+**Adicionar argumentos:**
 
 ```text
 -NoProfile -NonInteractive -ExecutionPolicy Bypass -File "C:\Scripts\Restic\Backup-Diario.ps1"
 ```
 
-**Iniciar em** — diretório exibido na captura de Editar Ação:
+**Iniciar em:**
 
 ```text
 C:\Scripts\Restic
 ```
 
-Os argumentos pertencem ao campo **Adicionar argumentos**, separados do caminho do executável. Esta transcrição registra os valores fornecidos; não representa um novo teste de execução.
+![Ação PowerShell](assets/automacao/02-acoes.png)
 
-## Comando registrado no log
+Os argumentos completos foram informados pelo responsável; o campo aparece truncado na captura. A tarefa chama o script principal diretamente, sem necessidade do executor opcional.
 
-```powershell
-powershell.exe -NoProfile -NonInteractive -ExecutionPolicy Bypass -File "C:\Scripts\Restic\Backup-Diario.ps1"
-```
+## 3. Geral e Configurações
 
-Origem de validação: `C:\Backup-Restic\Dados`.
-
-Repositório de validação: `rclone:onedrive-lab:Backup-Lab-Restic`.
-
-O comando executa um script já existente na máquina. Sua presença no log não permite revisar o conteúdo do script, o armazenamento da senha, o tratamento de erros ou o bloqueio de concorrência.
-
-## Capturas necessárias para completar a evidência
-
-1. **Tarefa habilitada e disparador ativo:** mostrar status Pronto, recorrência, próxima execução e a aba Disparadores com o disparador habilitado.
-2. **Editar Ação:** os campos completos estão transcritos acima, com programa e argumentos confirmados pelo responsável e diretório de trabalho visível na captura. Uma captura sem truncamento pode complementar o registro.
-3. **Execução por horário:** habilitar o histórico e aguardar o próximo disparo; capturar os eventos que identifiquem início pelo agendamento e conclusão, juntamente com o log correspondente. Executar manualmente a tarefa não comprova o disparador por horário.
-4. **Restauração do snapshot gerado pela tarefa:** restaurar o snapshot identificado no log em uma pasta separada e comparar hashes SHA-256 de arquivos de teste. A documentação anterior de [restauração](restauracao.md) é complementar, mas não substitui a validação deste snapshot.
-
-Para documentar também execução sem usuário conectado e recuperação após falhas, incluir as abas Geral, Condições e Configurações, com os identificadores pessoais ocultos, e resultados de testes desses cenários. Não declarar essas capacidades apenas pela presença das opções na interface.
-
-## Anonimização dos PNGs antes da publicação
-
-- Log: ocultar os valores de Nome de Usuário, Executar como Usuário e nome do Computador; remover ou ocultar o avatar do aplicativo.
-- Agendador: ocultar as demais tarefas e seus detalhes, o autor da tarefa de backup e quaisquer contas ou nomes de computador visíveis.
-- Ações: recortar para a janela de propriedades ou ocultar toda a lista de tarefas ao fundo.
-- Preservar status Desabilitado, resultado 0x0, datas, horários, comando, totais, snapshot e código de saída. A anonimização não deve modificar o resultado técnico.
-- Os caminhos de validação já publicados podem ser mantidos. Não publicar senhas, tokens ou conteúdo de arquivos de credenciais.
-
-As capturas anteriores ainda pendentes deverão ser inseridas junto de cada etapa após a anonimização e revisão visual.
-
-
-## Configuração registrada no Windows 11
-
-### Geral — conta de execução e opções de segurança
-
-![Aba Geral do backup, com autor e conta de execução ocultos](assets/automacao/04-geral-windows11.png)
+![Opções gerais anonimizadas](assets/automacao/04-geral-windows11.png)
 
 - Executar estando o usuário conectado ou não: selecionado.
 - Executar com privilégios mais altos: selecionado.
 - Não armazenar a senha: desmarcado.
-- Compatibilidade exibida em “Configurar para”: Windows Vista / Windows Server 2008.
+- Compatibilidade exibida: Windows Vista / Windows Server 2008. Esse campo foi preservado como observado; o ambiente foi identificado pelo responsável como Windows 11.
 
-A captura registra a configuração em um ambiente Windows 11 informado pelo responsável. O campo de compatibilidade é reproduzido como aparece na interface; não foi alterado para a publicação. A seleção dessas opções não substitui um teste de execução sem sessão aberta.
-
-### Configurações — execução perdida e concorrência
-
-![Aba Configurações do backup, com outras tarefas e autor ocultos](assets/automacao/05-configuracoes-windows11.png)
+![Configurações da tarefa](assets/automacao/05-configuracoes-windows11.png)
 
 | Opção | Estado observado |
 | --- | --- |
 | Permitir execução por demanda | Habilitado |
-| Executar após perder uma inicialização agendada | Habilitado |
+| Executar após agendamento perdido | Habilitado |
 | Reiniciar em caso de falha | Desabilitado |
-| Interromper execução prolongada | Habilitado, após 3 dias |
+| Interromper execução prolongada | Após 3 dias |
 | Forçar interrupção quando solicitado | Habilitado |
 | Excluir tarefa sem novo agendamento | Desabilitado |
-| Regra quando a tarefa já estiver executando | Não iniciar uma nova instância |
+| Regra para tarefa já em execução | Não iniciar uma nova instância |
 
-Nas duas capturas, a tarefa aparece como **Pronto**, com disparador diário às **19:50**, próxima execução em **17/11/2026 às 19:50** e última execução em **16/11/2026 às 19:50**, com resultado **0x0**. Isso registra o estado exibido pelo Agendador, sem comprovar isoladamente a origem automática do disparo.
+Essas são configurações observadas, não comprovação de testes de todos os cenários. O bloqueio de novas instâncias vale para essa tarefa; os scripts não implementam mutex para outras formas de execução.
 
-Permanecem pendentes o histórico do disparo por horário e a restauração validada do snapshot `ed71d352`.
+## 4. Logs e resultado registrado
+
+A transcrição é salva em `C:\Scripts\Restic\Logs\backup_AAAA-MM-DD_HH-mm-ss-fff.log`. O executor opcional cria também `execucao_AAAA-MM-DD_HH-mm-ss-fff.log`.
+
+![Log anonimizado da execução](assets/automacao/03-log.png)
+
+| Registro | Valor |
+| --- | --- |
+| Início | 16/11/2026 às 19:50:02 |
+| Snapshot | `ed71d352` |
+| Arquivos processados | 8.065 |
+| Volume processado | 742,395 MiB |
+| Tempo informado pelo Restic | 25 segundos |
+| Arquivos novos / alterados | 0 / 0 |
+| Código de saída | 0 |
+| Fim da transcrição | 19:50:30 |
+
+O log registra 51,497 KiB adicionados (10,714 KiB armazenados), com alterações em diretórios. Um novo snapshot pode existir sem mudança no conteúdo dos arquivos.
+
+O Agendador mostra **Pronto**, última execução em 16/11/2026 às 19:50, resultado **0x0** e próxima execução em 17/11/2026 às 19:50. Os horários são compatíveis com o log, mas o histórico de eventos do disparo não foi apresentado. O fuso da máquina não foi verificado.
+
+## 5. Tratamento de falhas e limites
+
+- Origem ou arquivo obrigatório ausente gera falha; o código inicial de falha é 1.
+- Após o backup, o script captura `$LASTEXITCODE` e o devolve com `exit`.
+- Não há tratamento que transforme backup parcial ou arquivos inacessíveis em sucesso. Conferir o código e as mensagens, não apenas a existência de snapshot.
+- Falhas na criação da pasta de logs ou no início da transcrição podem ocorrer antes do bloco de tratamento. Nesses casos, investigar também o resultado do processo e o histórico do Agendador.
+- O executor opcional captura saída adicional, mas depende igualmente de acesso à pasta de logs.
+- Não há alertas, retenção automática de snapshots, rotação de logs ou mutex nos scripts publicados.
+- As ACLs da senha, as permissões da origem e os testes sem sessão aberta dependem de validação local.
+
+## 6. Restauração já documentada
+
+O [tutorial de restauração e validação](restauracao.md) cobre restauração em pasta separada, integridade e comparação em lote de **8.065 arquivos idênticos** no conjunto testado.
+
+Não é necessário repetir a restauração para concluir esta versão da documentação. O teste anterior demonstra o procedimento de recuperação; não se afirma que o snapshot `ed71d352` foi restaurado. Testes periódicos de recuperação podem fazer parte da manutenção operacional futura.
+
+## 7. Próximas melhorias
+
+- Histórico de um disparo por horário, como evidência adicional opcional.
+- Alertas para falha ou ausência de backup recente.
+- Política de retenção validada antes de qualquer exclusão.
+- Rotação de logs e testes de cenários de falha.
+
+As cinco capturas foram editadas por IA para ocultar identificadores pessoais e outras tarefas. Os estados e números descritos foram conferidos nas capturas originais; a edição não representa uma nova execução.

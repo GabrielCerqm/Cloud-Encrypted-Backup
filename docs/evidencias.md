@@ -19,8 +19,21 @@ O conjunto de imagens fornecido para a versão inicial contém **16 capturas num
 | 13 | [Verificação de integridade do repositório](assets/seguraca/13-restic-check.png) | Execução de `restic check`. |
 | 14 | [Verificação aprofundada dos dados](assets/seguraca/14-restic-check-read-data.png) | Execução de `restic check --read-data`. |
 | 15 | [Comparação dos hashes SHA256](assets/restauracao/15-comparacao-sha256.png) | Cálculo do hash de um arquivo original e de sua cópia restaurada. |
-| 16 | [Resultado da validação SHA256](assets/restauracao/16-resultado-sha256.png) | Resultado da comparação de hashes de arquivos selecionados. |
+| 16 | [Resultado da validação SHA256](assets/restauracao/16-resultado-sha256.png) | Validação em lote: 8.065 arquivos idênticos no conjunto comparado. |
 
 ### Alcance das evidências
 
 As capturas demonstram a execução dos comandos e o comportamento observado no laboratório; não comprovam, isoladamente, políticas de retenção, automação em produção, segurança do armazenamento de credenciais ou recuperação integral de todos os dados.
+
+
+## Automação no Windows 11 — v1.1
+
+| Captura | Registro |
+| --- | --- |
+| [Disparadores](assets/automacao/01-disparadores.png) | Diário às 19:50, habilitado. |
+| [Ações](assets/automacao/02-acoes.png) | PowerShell e diretório de trabalho; argumentos completos transcritos no guia. |
+| [Log](assets/automacao/03-log.png) | Snapshot ed71d352 salvo; saída 0. |
+| [Geral](assets/automacao/04-geral-windows11.png) | Opções de conta e execução. |
+| [Configurações](assets/automacao/05-configuracoes-windows11.png) | Agendamento perdido e prevenção de nova instância. |
+
+As cinco imagens foram editadas por IA para anonimização. Os estados descritos foram conferidos nas capturas originais da conversa. Consulte o [guia de automação](automacao.md) para o alcance da evidência e os limites dos scripts.

@@ -1,4 +1,4 @@
-# Segurança — v1.0
+# Segurança
 
 ## Proteção do conteúdo
 
@@ -37,4 +37,13 @@ Revise as imagens para eliminar nomes de pessoas, usuários locais, arquivos rea
 
 ## Ainda fora do escopo
 
-Agendamento, controle de concorrência, alertas, rotação de logs, política de retenção e recuperação automatizada serão tratados em uma versão futura.
+Alertas, rotação de logs, política de retenção e recuperação automatizada permanecem para versões futuras. O agendamento e os scripts estão descritos em [Automação](automacao.md).
+
+## Revisão dos scripts publicados
+
+- A senha é lida de `Config/restic-password.txt`; seu conteúdo não está nos scripts nem deve ser registrado nos logs.
+- O Rclone usa `rclone.conf` do perfil da conta de execução. As permissões desses arquivos devem ser verificadas no Windows; o script verifica sua existência, mas não audita ACLs nem criptografa o arquivo de senha.
+- Os logs de transcrição podem conter usuário, computador, caminhos e erros com nomes de arquivos. Revise-os antes de publicar.
+- O bloqueio de novas instâncias está configurado no Agendador. Os scripts fornecidos não implementam mutex; execuções manuais concorrentes não são bloqueadas por essa configuração.
+- O código do Restic é devolvido ao processo. Arquivos sem acesso não são automaticamente excluídos nem convertidos em sucesso.
+- A revisão foi estática. Não foi feita nova execução dos scripts, teste sem sessão aberta ou simulação de falha.

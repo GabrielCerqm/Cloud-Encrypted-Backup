@@ -32,3 +32,6 @@ dados/
 
 # Configurações locais
 .vscode/
+# Configuracao privada e logs da automacao
+Config/
+Logs/

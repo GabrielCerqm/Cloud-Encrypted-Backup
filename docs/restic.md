@@ -59,7 +59,7 @@ restic snapshots
 
 Se `init` retornar `config file already exists`, isso indica que já há um repositório no destino. Não exclua ou sobrescreva seus dados.
 
-Para uma rotina automatizada futura, pode-se configurar um arquivo de senha **fora do Git**, protegido por permissões de arquivo, e informar sua localização via `RESTIC_PASSWORD_FILE`; não armazene a senha nos scripts ou no README.
+Para a [rotina automatizada](automacao.md), pode-se configurar um arquivo de senha **fora do Git**, protegido por permissões de arquivo, e informar sua localização via `RESTIC_PASSWORD_FILE`; não armazene a senha nos scripts ou no README.
 
 ## 5. Primeiro backup
 

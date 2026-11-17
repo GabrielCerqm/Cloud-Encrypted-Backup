@@ -1,10 +1,10 @@
 # Cloud Encrypted Backup — Restic + Rclone + OneDrive
 
-![Versão](https://img.shields.io/badge/vers%C3%A3o-1.0-blue) ![Status](https://img.shields.io/badge/status-em%20produ%C3%A7%C3%A3o-brightgreen)
+![Versão](https://img.shields.io/badge/vers%C3%A3o-1.1-blue) ![Status](https://img.shields.io/badge/status-em%20produ%C3%A7%C3%A3o-brightgreen)
 
-Solução de **backup criptografado e incremental em nuvem utilizada em ambiente real**, com Windows 11, **Restic**, **Rclone** e **Microsoft OneDrive**. O projeto operacional possui uma rotina automatizada de backup; a documentação pública é publicada por etapas e esta primeira versão aborda a configuração, a execução do backup, os snapshots, a restauração e os testes de integridade.
+Solução de **backup criptografado e incremental em nuvem utilizada em ambiente real**, com Windows 11, **Restic**, **Rclone** e **Microsoft OneDrive**. O projeto operacional possui uma rotina automatizada de backup; a documentação pública é publicada por etapas e a documentação aborda a configuração, a execução do backup, os snapshots, a restauração e os testes de integridade.
 
-> **Escopo da documentação v1.0:** implantação de backup criptografado e restauração, com comandos reproduzíveis manualmente. **A automação já utilizada no ambiente real será documentada em versão posterior**; sua implementação não está incluída nos arquivos públicos desta versão. Não confundir o escopo da documentação com as funcionalidades já existentes no ambiente.
+> **Escopo da documentação v1.1:** configuração, backup, restauração validada e publicação dos scripts de automação, agendamento e logs. As capturas registram execuções anteriores; a versão publicada dos scripts foi revisada estaticamente, sem nova execução neste ambiente.
 
 ## Objetivos
 
@@ -38,7 +38,7 @@ flowchart LR
 
 **Ambiente de validação utilizado nas evidências:** origem `C:\Backup-Restic\Dados`; repositório `rclone:onedrive-lab:Backup-Lab-Restic`; restauração `C:\Backup-Restic\Restauracao`. Estes são caminhos de teste usados para demonstrar a solução real sem divulgar os caminhos ou as credenciais de produção.
 
-## Documentação da v1.0
+## Documentação
 
 1. [Instalação e versões](docs/instalacao.md)
 2. [Configuração do Rclone com OneDrive — passo a passo](docs/rclone-onedrive.md)
@@ -46,11 +46,11 @@ flowchart LR
 4. [Configuração do ambiente e backup](docs/configuracao.md)
 5. [Restauração e conferência](docs/restauracao.md)
 6. [Segurança e verificações de integridade](docs/seguraca.md)
-7. [Índice das 16 evidências](docs/evidencias.md)
+7. [Índice das evidências](docs/evidencias.md)
 
 ### Validação da automação
 
-Consulte a [análise da execução de 16/11/2026 e das evidências pendentes](docs/automacao.md). O log registra snapshot salvo e código de saída 0; a captura do Agendador mostra a tarefa desabilitada. A publicação dos PNGs anonimizados permanece pendente. Este registro complementa a v1.0, sem publicar ainda a implementação completa da automação.
+Consulte a [automação no Windows 11](docs/automacao.md), com os scripts publicados, instruções de preparação, cinco capturas anonimizadas e limites da validação. A tarefa aparece como **Pronto**; o log registra snapshot salvo e código de saída 0.
 
 ### Comandos essenciais (reprodução em ambiente de teste)
 
@@ -69,12 +69,13 @@ A senha do Restic é indispensável para os comandos; **não** a inclua em scrip
 
 ## Resultados registrados
 
-As evidências coletadas no ambiente de validação cobrem: identificação das ferramentas, conexão com OneDrive, estrutura criptografada, backup inicial, múltiplos snapshots, comparação incremental, estatísticas, restauração, `restic check`, `restic check --read-data` e verificação SHA-256. A comparação de hashes documenta a igualdade dos arquivos selecionados para teste, **não** uma auditoria exaustiva de todos os arquivos.
+As evidências coletadas no ambiente de validação cobrem: identificação das ferramentas, conexão com OneDrive, estrutura criptografada, backup inicial, múltiplos snapshots, comparação incremental, estatísticas, restauração, `restic check`, `restic check --read-data` e verificação SHA-256. A validação em lote documentada reportou 8.065 arquivos idênticos, sem diferenças, ausências ou erros de leitura no conjunto comparado. Isso não equivale a uma auditoria de todos os dados de produção.
 
 ## Evolução planejada
 
 - **v1.0 — Backup criptografado e restauração:** escopo descrito neste documento.
-- **Versão futura da documentação — Automação:** publicação do fluxo PowerShell, agendamento, logs, tratamento de erros e, quando comprovada, política de retenção. A automação operacional existente será apresentada em versão separada, após revisão de segurança.
+- **v1.1 — Automação documentada:** scripts PowerShell, Agendador, logs e capturas.
+- **Próximas melhorias:** alertas, política de retenção, rotação de logs e testes operacionais de cenários de falha.
 
 ## Observações de segurança
 
