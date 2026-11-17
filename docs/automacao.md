@@ -2,13 +2,13 @@
 
 O ambiente real utiliza automação de backup. Esta página registra a análise das três capturas fornecidas em 16/11/2026, obtidas no ambiente de validação. O script completo ainda não integra a documentação pública da v1.0.
 
-> **Publicação das imagens pendente:** os PNGs ainda não foram anonimizados nem adicionados ao repositório. Os resultados abaixo são uma transcrição resumida das capturas fornecidas, e não substituem os arquivos de evidência.
+> **Atualização:** as capturas anonimizadas das abas Geral e Configurações estão publicadas abaixo. Os PNGs anteriores de Disparadores, Ações e Log ainda aguardam publicação. As imagens desta página foram editadas por IA para ocultar identificadores; os estados descritos foram conferidos nas capturas originais.
 
 ## Resultados observados
 
 | Captura | Resultado observado | Limitação |
 | --- | --- | --- |
-| Agendador de Tarefas | Tarefa Backup Diário - Restic; disparador diário às 19:50; última execução em 16/11/2026 às 19:50; resultado 0x0 | A tarefa aparece como **Desabilitado** e o histórico está desabilitado. Não comprova continuidade do agendamento nem, isoladamente, a origem automática do disparo. |
+| Agendador de Tarefas | Tarefa Backup Diário - Restic; disparador diário às 19:50; última execução em 16/11/2026 às 19:50; resultado 0x0 | A captura anterior mostrava a tarefa desabilitada. Nas novas capturas das abas Geral e Configurações, o status é **Pronto**. O histórico do disparo por horário ainda não foi apresentado. |
 | Ações da tarefa | Ação Iniciar um programa usando Windows PowerShell | Os argumentos estão cortados na captura original; os valores completos foram posteriormente informados pelo responsável e estão documentados abaixo. |
 | Log PowerShell | Início às 19:50:02; snapshot ed71d352 salvo; código de saída 0; término da transcrição às 19:50:30 | Comprova o resultado desta execução de backup; não comprova restauração deste snapshot nem todas as condições de execução sem sessão aberta. |
 
@@ -69,4 +69,36 @@ Para documentar também execução sem usuário conectado e recuperação após 
 - Preservar status Desabilitado, resultado 0x0, datas, horários, comando, totais, snapshot e código de saída. A anonimização não deve modificar o resultado técnico.
 - Os caminhos de validação já publicados podem ser mantidos. Não publicar senhas, tokens ou conteúdo de arquivos de credenciais.
 
-As capturas deverão ser inseridas nesta página, junto de cada etapa, após a anonimização e revisão visual.
+As capturas anteriores ainda pendentes deverão ser inseridas junto de cada etapa após a anonimização e revisão visual.
+
+
+## Configuração registrada no Windows 11
+
+### Geral — conta de execução e opções de segurança
+
+![Aba Geral do backup, com autor e conta de execução ocultos](assets/automacao/04-geral-windows11.png)
+
+- Executar estando o usuário conectado ou não: selecionado.
+- Executar com privilégios mais altos: selecionado.
+- Não armazenar a senha: desmarcado.
+- Compatibilidade exibida em “Configurar para”: Windows Vista / Windows Server 2008.
+
+A captura registra a configuração em um ambiente Windows 11 informado pelo responsável. O campo de compatibilidade é reproduzido como aparece na interface; não foi alterado para a publicação. A seleção dessas opções não substitui um teste de execução sem sessão aberta.
+
+### Configurações — execução perdida e concorrência
+
+![Aba Configurações do backup, com outras tarefas e autor ocultos](assets/automacao/05-configuracoes-windows11.png)
+
+| Opção | Estado observado |
+| --- | --- |
+| Permitir execução por demanda | Habilitado |
+| Executar após perder uma inicialização agendada | Habilitado |
+| Reiniciar em caso de falha | Desabilitado |
+| Interromper execução prolongada | Habilitado, após 3 dias |
+| Forçar interrupção quando solicitado | Habilitado |
+| Excluir tarefa sem novo agendamento | Desabilitado |
+| Regra quando a tarefa já estiver executando | Não iniciar uma nova instância |
+
+Nas duas capturas, a tarefa aparece como **Pronto**, com disparador diário às **19:50**, próxima execução em **17/11/2026 às 19:50** e última execução em **16/11/2026 às 19:50**, com resultado **0x0**. Isso registra o estado exibido pelo Agendador, sem comprovar isoladamente a origem automática do disparo.
+
+Permanecem pendentes o histórico do disparo por horário e a restauração validada do snapshot `ed71d352`.
